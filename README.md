@@ -1,2 +1,2 @@
 # Arteficial-Intelligence
-Problems given in FMI AI course
+In this repo I will upload solutions of problems given in FMI AI course
