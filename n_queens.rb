@@ -115,8 +115,8 @@ class Board
   def solve_n_queens_problem
     solution = @blacksmith.annealing
     board = solution.nil? ? nil : draw_solution(solution)
-    # board.each { |row| p row } if board
-    # print "\n\n\n\n\n"
+    board.each { |row| p row } if board
+    print "\n\n\n\n\n"
   end
 
   private
