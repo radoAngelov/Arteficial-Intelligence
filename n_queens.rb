@@ -1,5 +1,3 @@
-# Solve N-queens problem with simulated annealing
-
 # queens are going to be represented with array
 # Example: [0, 0, 1, 2, 4]
 # -> 1st element here means "Q on 1st row is on 1st column"
