@@ -90,5 +90,3 @@ def order_frogs(frogs)
   cluster = dfs(initial_pole, ordered_pole)
   cluster
 end
-
-p order_frogs(2)
