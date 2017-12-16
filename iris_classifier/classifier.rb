@@ -28,7 +28,8 @@ class Classifier
     d = 0
     vector_x.zip(vector_y).each { |x, y| d += (x - y) ** 2 }
 
-    1.0 / (Math.sqrt(d) + 0.0001)
+    # add 1e-4 to distance to protect from vectors without distance between them
+    1.0 / Math.sqrt(d + 0.0001)
   end
 
   # returns first k nearest neighbours to the entity
