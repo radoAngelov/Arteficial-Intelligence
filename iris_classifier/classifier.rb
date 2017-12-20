@@ -129,4 +129,4 @@ end
 a = Classifier.new
 a.predict
 print "#{a.accuracy}\n"
-a.mistakes.each { |m| p m} unless a.mistakes.empty?
+a.mistakes.each { |m| p m } unless a.mistakes.empty?
