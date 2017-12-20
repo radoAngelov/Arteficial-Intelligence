@@ -35,11 +35,7 @@ class GameState
   def intermediate_state_rank
     ranks = @moves.collect{ |game_state| game_state.rank }
 
-    if @current_player == 'X'
-      ranks.max
-    else
-      ranks.min
-    end
+    @current_player == 'X' ? ranks.max : ranks.min
   end
 
   def winner
@@ -67,10 +63,17 @@ end
 
 class GameTree
   def generate
-    # player = rand < 0.5 ? 'X' : 'O'
-    initial_game_state = GameState.new('X', Array.new(9))
+    initial_game_state = GameState.new(get_player_choice, Array.new(9))
     generate_moves(initial_game_state)
     initial_game_state
+  end
+
+  private
+
+  def get_player_choice
+    puts "Press 1 for starting first\nPress 2 for starting second"
+    choice = gets
+    choice.to_i == 1 ? 'O' : 'X'
   end
 
   def generate_moves(game_state)
@@ -91,7 +94,7 @@ end
 
 class Game
   def initialize
-    @game_state = @initial_game_state = GameTree.new.generate
+    @game_state = GameTree.new.generate
   end
 
   def turn
@@ -103,14 +106,10 @@ class Game
     if @game_state.current_player == 'X'
       @game_state = @game_state.next_move
       puts "X's move:"
-      render_board
-      puts "\n"
       turn
     else
-      get_human_move
-      puts "The result of your move:"
       render_board
-      puts "\n"
+      get_human_move
       turn
     end
   end
@@ -124,14 +123,14 @@ class Game
       when 2 then output << "\n-----------\n" unless position == 8
       end
     end
-    puts output
+    puts "#{output}\n"
   end
 
   def get_human_move
     puts "Enter square # to place your 'O' in:"
     position = gets
 
-    move = @game_state.moves.find{ |game_state| game_state.board[position.to_i] == 'O' }
+    move = @game_state.moves.find{ |state| state.board[position.to_i] == 'O' }
 
     if move
       @game_state = move
