@@ -93,3 +93,21 @@ def accuracy(feature_set, predictions)
 
   (correct / feature_set.size) * 100
 end
+
+# split into K folds
+def cross_validation_split(dataset, n_folds = 10):
+  dataset_split = []
+  dataset_copy = dataset.dup
+  fold_size = (dataset.size / n_folds).to_i
+
+  n_folds.size.times do |i|
+    fold = []
+    while fold.size < fold_size:
+      index = rand(dataset_copy.size)
+      fold.push(dataset_copy.pop(index))
+    end
+    dataset_split.push(fold)
+  end
+
+  dataset_split
+end

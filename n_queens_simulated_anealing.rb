@@ -1,3 +1,7 @@
+# Solve N Queens problem with sumulated_anealing
+
+# Used recourse: http://letstalkdata.com/2013/12/n-queens-part-2-more-algorithms/
+
 # queens are going to be represented with array
 # Example: [0, 0, 1, 2, 4]
 # -> 1st element here means "Q on 1st row is on 1st column"
@@ -6,8 +10,6 @@
 # [+, Q, +, +, +]
 # [+, +, Q, +, +]
 # [+, +, +, +, Q]
-
-# Used recourse: http://letstalkdata.com/2013/12/n-queens-part-2-more-algorithms/
 
 ANNEALING_RATE = 0.95
 MAX_TRIES = 10 ** 6

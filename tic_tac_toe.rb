@@ -142,11 +142,14 @@ class Game
 
   def print_game_result
     if @game_state.draw?
-      puts "It was a draw!"
+      render_board
+      puts "DRAW"
     elsif @game_state.winner == 'X'
-      puts "X won!"
+      render_board
+      puts "COMPUTER WON!"
     else
-      puts "O won!"
+      render_board
+      puts "YOU WON!"
     end
   end
 end
