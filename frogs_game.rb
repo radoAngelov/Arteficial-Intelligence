@@ -1,92 +1,98 @@
-# Given: 2N+1 nodes(frogs). 1 for "start", N for ">" and N for "<".
+# Given: 2N+1 nodes(frogs)- 1 for "rock", N for ">" and N for "<".
 # Frogs can move in the direction they are looking to.
 # One frog can jump over another.
 # Problem: Change the direction of frogs using DFS.
+LEFT_FROG  = '>' # looks to right
+RIGHT_FROG = '<' # looks to left
 
-LEFT_LOOKING_FROG = '<'
-RIGHT_LOOKING_FROG = '>'
+PLUS_ONE_POSITION   = 1
+MINUS_ONE_POSITION  = -1
+PLUS_TWO_POSITIONS  = 2
+MINUS_TWO_POSITIONS = -2
 
-MOVE_TO_LEFT = 1
-MOVE_TO_RIGHT = 2
-MOVE_TO_RIGHT_WITH_JUMP = 3
-MOVE_TO_LEFT_WITH_JUMP = 4
-
-MOVES_COST = {
-  MOVE_TO_LEFT: -1,
-  MOVE_TO_RIGHT: 1,
-  MOVE_TO_RIGHT_WITH_JUMP: -2,
-  MOVE_TO_LEFT_WITH_JUMP: 2
-}
-
-# generating pole with frogs
-def pole_serializer(frogs_count, left, right)
-  return if !frogs_count.is_a?(Numeric) || frogs_count < 1
-
-  pole = ''
-
-  frogs_count.times { |frog| pole += left }
-  pole += '_'
-  frogs_count.times { |frog| pole += right }
-
-  pole.chars
-end
-
-# validations for frog moves
-def check_pole(pole, move)
-  start_position = pole.index('_')
-  new_position = start_position + move
-
-  return if new_position > pole.length-1 || new_position < 0
-
-  if new_position < start_position
-    check_left(pole, new_position)
-  else
-    check_right(pole, new_position)
+# generating pole with n frogs
+def generate_frogs_pole(n, left, right)
+  Array.new.tap do |pole|
+    n.times { pole.push left }
+    pole.push '_'
+    n.times { pole.push right }
   end
 end
 
-def check_left(pole, frog)
-  pole[frog] == RIGHT_LOOKING_FROG
-end
+def move_rock(frogs, rock_index, place_to_go, paths)
+  # check for correct arguments
+  return if rock_index < 0 || place_to_go < 0
+  return if rock_index >= frogs.size || place_to_go >= frogs.size
+  return if defined?(solution_found) && solution_found
 
-def check_right(pole, frog)
-  pole[frog] == LEFT_LOOKING_FROG
-end
+  temp = frogs[rock_index]
+  frogs[rock_index] = frogs[place_to_go]
+  frogs[place_to_go] = temp
 
-def move_start_position(pole, move)
-  start_position = pole.index('_')
+  path = frogs.join('  ')
+  paths.push path
 
-  pole[start_position] = pole[start_position + move]
-  pole[start_position + move] = '_'
+  if is_solution?(frogs)
+    print_solution paths
+    solution_found = true
+    return
+  end
 
-  pole
-end
+  current_rock_place = rock_index
 
-def dfs(pole, mapper)
-  visited = []
-  target = []
+  frog = rock_index + MINUS_ONE_POSITION
+  if can_move?(frogs, frog, LEFT_FROG)
+    recursion(frogs, frog, current_rock_place, paths)
+  end
 
-  if pole == mapper
-    target.push(pole)
-    return target
-  else
-    MOVES_COST.values.each do |move|
-      if check_pole(pole, move)
-        visited.push(pole)
-        reordered_pole = move_start_position(pole, move)
-        visited.push(reordered_pole) unless visited.include? reordered_pole
-        dfs(visited.pop, mapper)
-      else
-        dfs(visited.pop, mapper)
-      end
-    end
+  frog = rock_index + MINUS_TWO_POSITIONS
+  if can_move?(frogs, frog, LEFT_FROG)
+    recursion(frogs, frog, current_rock_place, paths)
+  end
+
+  frog = rock_index + PLUS_ONE_POSITION
+  if can_move?(frogs, frog, RIGHT_FROG)
+    recursion(frogs, frog, current_rock_place, paths)
+  end
+
+  frog = rock_index + PLUS_TWO_POSITIONS
+  if can_move?(frogs, frog, RIGHT_FROG)
+    recursion(frogs, frog, current_rock_place, paths)
   end
 end
 
-def order_frogs(frogs)
-  initial_pole = pole_serializer(frogs, RIGHT_LOOKING_FROG, LEFT_LOOKING_FROG)
-  ordered_pole = pole_serializer(frogs, LEFT_LOOKING_FROG, RIGHT_LOOKING_FROG)
-
-  cluster = dfs(initial_pole, ordered_pole)
-  cluster
+def recursion(frogs, rock_index, place_to_go, paths)
+  paths_copy = paths.dup
+  frogs_copy = frogs.dup
+  move_rock(frogs_copy, rock_index, place_to_go, paths_copy)
 end
+
+def can_move?(frogs, frog, direction)
+  return false if frog < 0 || frog >= frogs.size
+  frogs[frog] == direction
+end
+
+def is_solution?(pole)
+  frogs_number = pole.size / 2
+  final_pole = generate_frogs_pole(frogs_number, RIGHT_FROG, LEFT_FROG)
+
+  pole == final_pole
+end
+
+def print_solution(moves)
+  moves.each { |move| p move }
+end
+
+puts "Please enter frogs number:"
+n = gets
+frogs = n.to_i
+if frogs <= 0
+  p "Please enter a postive number"
+  exit
+else
+  initial_pole = generate_frogs_pole(frogs, LEFT_FROG, RIGHT_FROG)
+  paths = []
+  paths.push(initial_pole.join('  '))
+  move_rock(initial_pole, frogs - 1, frogs, paths)
+end
+
